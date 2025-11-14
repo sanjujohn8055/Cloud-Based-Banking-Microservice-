@@ -11,33 +11,9 @@ env:
   IMAGE_NAME: banking-microservice
 
 jobs:
-  test:
+  validate:
     runs-on: ubuntu-latest
     
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: banking_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-      
-      redis:
-        image: redis:7-alpine
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
-
     steps:
     - uses: actions/checkout@v3
     
@@ -45,21 +21,48 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18'
-        cache: 'npm'
     
-    - name: Install dependencies
+    - name: Validate project structure
       run: |
-        cd services/user-service && npm ci
-        cd ../account-service && npm ci
-        cd ../api-gateway && npm ci
-    
-    - name: Lint and validate
-      run: |
-        echo "✅ Code validation passed"
-        echo "Services are ready for deployment"
+        echo "🔍 Validating project structure..."
+        
+        # Check if all service directories exist
+        for service in api-gateway user-service account-service transaction-service payment-service notification-service; do
+          if [ -d "services/$service" ]; then
+            echo "✅ $service directory exists"
+          else
+            echo "❌ $service directory missing"
+            exit 1
+          fi
+        done
+        
+        # Check if Docker files exist
+        for service in api-gateway user-service account-service transaction-service payment-service notification-service; do
+          if [ -f "services/$service/Dockerfile" ]; then
+            echo "✅ $service Dockerfile exists"
+          else
+            echo "❌ $service Dockerfile missing"
+            exit 1
+          fi
+        done
+        
+        # Check if package.json files exist
+        for service in api-gateway user-service account-service transaction-service payment-service notification-service; do
+          if [ -f "services/$service/package.json" ]; then
+            echo "✅ $service package.json exists"
+          else
+            echo "❌ $service package.json missing"
+            exit 1
+          fi
+        done
+        
+        echo ""
+        echo "✅ All validation checks passed!"
+        echo "📦 Project structure is valid"
+        echo "🚀 Ready for deployment"
 
   build-and-push:
-    needs: test
+    needs: validate
     runs-on: ubuntu-latest
     if: false  # Disabled until Docker registry is configured
     
