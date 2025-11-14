@@ -1,0 +1,42 @@
+{
+  "name": "banking-microservice",
+  "version": "1.0.0",
+  "description": "Cloud-based banking microservice architecture",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest tests/integration/",
+    "test:load": "node tests/performance/load-test.js",
+    "test:all": "npm run test && npm run test:load",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "k8s:deploy": "kubectl apply -f k8s/",
+    "k8s:delete": "kubectl delete -f k8s/"
+  },
+  "keywords": ["banking", "microservice", "nodejs", "docker", "kubernetes"],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "dotenv": "^16.3.1",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "pg": "^8.11.3",
+    "redis": "^4.6.8",
+    "amqplib": "^0.10.3",
+    "joi": "^17.9.2",
+    "winston": "^3.10.0",
+    "prometheus-client": "^14.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.6.2",
+    "supertest": "^6.3.3",
+    "autocannon": "^7.12.0",
+    "@types/jest": "^29.5.4"
+  }
+}
