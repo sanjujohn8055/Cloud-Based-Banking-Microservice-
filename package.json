@@ -6,9 +6,10 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "jest tests/integration/",
+    "test": "jest tests/unit/",
+    "test:integration": "jest tests/integration/",
     "test:load": "node tests/performance/load-test.js",
-    "test:all": "npm run test && npm run test:load",
+    "test:all": "npm run test && npm run test:integration && npm run test:load",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
